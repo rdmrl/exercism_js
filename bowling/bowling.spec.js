@@ -2,7 +2,7 @@ import { Bowling } from './bowling';
 
 describe('Bowling', () => {
   describe('Check game can be scored correctly.', () => {
-    test('should be able to score a game with all zeros', () => {
+    xtest('should be able to score a game with all zeros', () => {
       const rolls = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       ];
@@ -68,7 +68,7 @@ describe('Bowling', () => {
       expect(bowling.score()).toEqual(17);
     });
 
-    xtest('a strike earns ten points in a frame with a single roll', () => {
+    test('a strike earns ten points in a frame with a single roll', () => {
       const rolls = [10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       const bowling = new Bowling();
       rolls.forEach((roll) => {
@@ -77,7 +77,7 @@ describe('Bowling', () => {
       expect(bowling.score()).toEqual(10);
     });
 
-    xtest('points scored in the two rolls after a strike are counted twice as a bonus', () => {
+    test('points scored in the two rolls after a strike are counted twice as a bonus', () => {
       const rolls = [10, 5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       const bowling = new Bowling();
       rolls.forEach((roll) => {
@@ -86,7 +86,7 @@ describe('Bowling', () => {
       expect(bowling.score()).toEqual(26);
     });
 
-    xtest('consecutive strikes each get the two roll bonus', () => {
+    test('consecutive strikes each get the two roll bonus', () => {
       const rolls = [10, 10, 10, 5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       const bowling = new Bowling();
       rolls.forEach((roll) => {
@@ -95,9 +95,10 @@ describe('Bowling', () => {
       expect(bowling.score()).toEqual(81);
     });
 
-    xtest('a strike in the last frame gets a two roll bonuses that is counted once', () => {
+    test('a strike in the last frame gets a two roll bonuses that is counted once', () => {
       const rolls = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 7, 1,
+        0, 0,  0, 0,  0, 0,  0, 0,  0, 0, 
+        0, 0,  0, 0,  0, 0,  0, 0, 10, 7,  1,
       ];
       const bowling = new Bowling();
       rolls.forEach((roll) => {
@@ -117,9 +118,10 @@ describe('Bowling', () => {
       expect(bowling.score()).toEqual(20);
     });
 
-    xtest('strikes with the two roll bonus do not get bonus rolls', () => {
+    test('strikes with the two roll bonus do not get bonus rolls', () => {
       const rolls = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10,
+        0, 0,  0, 0,  0, 0,  0, 0,  0, 0, 
+        0, 0,  0, 0,  0, 0,  0, 0, 10, 10,  10,
       ];
       const bowling = new Bowling();
       rolls.forEach((roll) => {
