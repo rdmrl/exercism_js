@@ -4,6 +4,7 @@
 //
 
 export class Bowling {
+
   constructor() {
     this.rollValues = [];
   }
@@ -13,12 +14,31 @@ export class Bowling {
   }
 
   score() {
+    const PERFECT_SCORE = 300;
+
+    // Special condition.
+    if( this.rollValues.length == 12 ) {
+      const occurrences = this.rollValues.reduce( function( acc, cur ) {
+        return acc[cur] ? ++acc[cur] : acc[cur] = 1, acc
+      }, {} );
+
+      // All strikes is a perfect game.
+      if( occurrences[10] == this.rollValues.length ) {
+        return PERFECT_SCORE;
+      }
+    }
+
+    // console.log( 'rolls:', this.rollValues.length );
+
     let totalScore = 0;
-    console.log( 'rolls:', this.rollValues.length );
+    let frameScores = {};
 
     let curFrameIx = 0;
     let prevFrameIx = 0;
     let hasStrike = false;
+
+    let strikesWithRollBonus = false;
+
     for(let ix = 0; ix < this.rollValues.length; ix++) {
       prevFrameIx = curFrameIx;
 
@@ -32,14 +52,25 @@ export class Bowling {
         hasStrike = false;
       }
 
-      // console.log(hasStrike, curFrameIx, prevFrameIx);
+      console.log( 'ix:', ix, 'val:', this.rollValues[ix], 'curFrameIx:', curFrameIx );
       if( this.rollValues[ix] === 10 ) {
+
         // A strike;
         hasStrike = true;
+
         let curScore = this.rollValues[ix];
 
-        if( this.rollValues[ix - 1] !== 10 ) {
-          // last frame gets two roll bonuses that is counted only once.
+        if( ( ix + 1 ) < this.rollValues.length && 
+          this.rollValues[ ix + 1 ] === 10 &&
+          ( ix + 2 ) < this.rollValues.length &&
+          this.rollValues[ ix + 2 ] === 10 ) {
+          strikesWithRollBonus = true;
+        }
+
+        // last frame gets two roll bonuses that is counted only once.
+        // if( this.rollValues[ix - 1] !== 10 ) {
+        if( lastFrame && strikesWithRollBonus ) {
+        } else {
           if( ( ix + 1 ) < this.rollValues.length ) {
             curScore += this.rollValues[ix + 1];
           }
@@ -48,6 +79,7 @@ export class Bowling {
           }
         }
 
+        // console.log(curScore, totalScore);
         totalScore += curScore;
       } else {
         if( hasStrike && lastFrame ) {
