@@ -31,10 +31,11 @@ export class Bowling {
     // console.log( 'rolls:', this.rollValues.length );
 
     let totalScore = 0;
+    let curFrameScore = 0;
     let frameScores = {};
 
-    let curFrameIx = 0;
-    let prevFrameIx = 0;
+    let curFrameIx = 1;
+    let prevFrameIx = 1;
     let hasStrike = false;
 
     let strikesWithRollBonus = false;
@@ -45,12 +46,14 @@ export class Bowling {
       // 1-based index of the current frame.
       curFrameIx = Math.floor(ix / 2) + 1;
 
-      const lastFrame = ( curFrameIx >= 10 );
-
       if( curFrameIx !== prevFrameIx && curFrameIx <= 10 ) {
         // Reset the strike flag after moving to the next frame.
         hasStrike = false;
+        frameScores[curFrameIx - 1] = curFrameScore;
+        curFrameScore = 0;
       }
+
+      const lastFrame = ( curFrameIx >= 10 );
 
       console.log( 'ix:', ix, 'val:', this.rollValues[ix], 'curFrameIx:', curFrameIx );
       if( this.rollValues[ix] === 10 ) {
@@ -68,7 +71,7 @@ export class Bowling {
         }
 
         // last frame gets two roll bonuses that is counted only once.
-        // if( this.rollValues[ix - 1] !== 10 ) {
+        // if( this.rollValues[ix - 1] !== 10 ) 
         if( lastFrame && strikesWithRollBonus ) {
         } else {
           if( ( ix + 1 ) < this.rollValues.length ) {
@@ -80,15 +83,19 @@ export class Bowling {
         }
 
         // console.log(curScore, totalScore);
+        curFrameScore += curScore;
         totalScore += curScore;
       } else {
         if( hasStrike && lastFrame ) {
         } else {
           totalScore += this.rollValues[ix];
+          curFrameScore += this.rollValues[ix];
         }
       }
-    }
 
+    } // for
+
+    console.log(frameScores);
     return totalScore;
 
   }
