@@ -6,10 +6,22 @@
 export class Bowling {
 
   constructor() {
+    // The value of each roll.
     this.rollValues = [];
+
+    // Scores grouped by frame.
+    this.frameScores = [];
   }
 
   roll( rollValue ) {
+    if(rollValue < 0) {
+      throw new Error('Negative roll is invalid');
+    }
+
+    if(rollValue > 10) {
+      throw new Error('Pin count exceeds pins on the lane');
+    }
+
     this.rollValues.push( rollValue );
   }
 
@@ -30,32 +42,56 @@ export class Bowling {
 
     // console.log( 'rolls:', this.rollValues.length );
 
+    // The total score for the entire game.
     let totalScore = 0;
-    let curFrameScore = 0;
-    let frameScores = {};
 
-    let curFrameIx = 1;
-    let prevFrameIx = 1;
+
+    let prevFrameIx = -2;
+
+    // Set this to -1 so that the first frame check works
+    // when comparing with prevFrameIx.
+    let curFrameIx = -1;
+
     let hasStrike = false;
 
+    // The game always starts with a new frame.
+    let newFrameStart = true;
+
     let strikesWithRollBonus = false;
+
+    let errorMsg = null;
 
     for(let ix = 0; ix < this.rollValues.length; ix++) {
       prevFrameIx = curFrameIx;
 
-      // 1-based index of the current frame.
-      curFrameIx = Math.floor(ix / 2) + 1;
+      if(this.rollValues[ix] < 0) {
+        errorMsg = "Negative roll is invalid";
+        break;
+      }
+
+      // 0-based index of the current frame.
+      curFrameIx = Math.floor(ix / 2);
+
+      // Combined the scores for the rolls in each individual frame.
+      if("undefined" === typeof(frameScores[curFrameIx])) {
+        // Initial value.
+        frameScores[curFrameIx] = 0;
+      }
+      frameScores[curFrameIx] += this.rollValues[ix];
 
       if( curFrameIx !== prevFrameIx && curFrameIx <= 10 ) {
         // Reset the strike flag after moving to the next frame.
         hasStrike = false;
-        frameScores[curFrameIx - 1] = curFrameScore;
-        curFrameScore = 0;
+
+        // Start of a new frame.
+        newFrameStart = true;
+      } else {
+        newFrameStart = false;
       }
 
-      const lastFrame = ( curFrameIx >= 10 );
+      const lastFrame = ( curFrameIx >= 9 );
 
-      console.log( 'ix:', ix, 'val:', this.rollValues[ix], 'curFrameIx:', curFrameIx );
+      console.log( 'ix:', ix, 'val:', this.rollValues[ix], 'curFrameIx:', curFrameIx, 'lastFrame:', lastFrame, 'newFrameStart:', newFrameStart );
       if( this.rollValues[ix] === 10 ) {
 
         // A strike;
@@ -83,17 +119,33 @@ export class Bowling {
         }
 
         // console.log(curScore, totalScore);
-        curFrameScore += curScore;
         totalScore += curScore;
       } else {
         if( hasStrike && lastFrame ) {
+          console.log('hasStrike and lastFrame');
         } else {
+          console.log('NOT hasStrike and lastFrame');
           totalScore += this.rollValues[ix];
-          curFrameScore += this.rollValues[ix];
         }
       }
 
+      // Check at the end of the frame for a spare.
+      if(!newFrameStart 
+
+        // A spare in the last frame gets a one roll bonus that is 
+        // counted only once.
+        && !lastFrame) {
+
+        // End of the frame.
+        if(frameScores[curFrameIx] === 10) {
+          // This is a spare. Points scored after a spare are counted twice.
+          if( ( ix + 1 ) < this.rollValues.length ) {
+            totalScore += this.rollValues[ix + 1];
+          }
+        }
+      }
     } // for
+
 
     console.log(frameScores);
     return totalScore;
