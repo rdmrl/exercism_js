@@ -50,7 +50,8 @@ class WordSearch {
 
     let wordPos;
 
-    // The char at charIx has already been found; start with the next char.
+    // The char at charIx has already been found before arriving here.
+    // Start with the next char.
     let nextCharIx = charIx + 1;
 
     // Look for the next char on the next row.
@@ -120,13 +121,15 @@ class WordSearch {
   #findCharInRow( row, rowIx, word, reverseSearch ) {
     let wordPos;
 
+    // Start with the first character of the word.
     let charIx = 0;
 
     // Also check for multiple matches of the first char in the same row.
+    // The index of the next search in the row. Set to the character after
+    // the previous match.
     let findCharPos = 0;
 
     do {
-      // Start with the first character of the word.
       const curChar = word.charAt( charIx );
 
       // Find the word's character column index in the grid row.
@@ -139,12 +142,12 @@ class WordSearch {
       // Found the char on this row.
       if ( columnIx !== -1 ) {
 
+        // If reverse search, move to the previous row. Else, move to the next row.
         let nextRowIx = reverseSearch ? Math.max( 0, rowIx - 1 ) : Math.min( rowIx + 1, this.numRows - 1 );
 
         // Check if the word is present in this column.
         let result = this.#findWordInColumn( word, charIx, nextRowIx, columnIx, reverseSearch );
         if ( result ) {
-          // console.log( 'findWordInCol:', result );
           wordPos = result;
           break;
         } else {
@@ -152,12 +155,12 @@ class WordSearch {
           findCharPos = columnIx + 1;
         }
       } else {
-        // Continue on the next row.
+        // Continue on the next row. Restart with the first character of the word.
         charIx = 0;
         break;
       }
 
-    } while ( findCharPos < word.length );
+    } while ( findCharPos < row.length );
 
     return wordPos;
   }
@@ -165,15 +168,19 @@ class WordSearch {
   #findInRows( word, reverseSearch ) {
     let wordPos;
 
-    // Start with the first row.
+    // If in reverse search, start from the last row.
+    // Else start from the first row.
     let rowIx = reverseSearch ? ( this.numRows - 1 ) : 0;
 
+    // Set to true to break out of the loop.
     let foundWord = false;
 
+    // Loop through each of the rows.
     do {
       // Get the current row in the grid.
       const row = this.grid[ rowIx ];
 
+      // Find the matching character in the current row.
       wordPos = this.#findCharInRow( row, rowIx, word, reverseSearch );
       if ( "undefined" !== typeof( wordPos ) ) {
         foundWord = true;
@@ -181,11 +188,13 @@ class WordSearch {
       }
 
       if ( reverseSearch ) {
+        // Decrement the row index until the first row (0-index).
         rowIx--;
         if ( rowIx < 0 ) {
           break;
         }
       } else {
+        // Increment the row index until the last row is reached.
         rowIx++;
         if ( rowIx >= this.numRows ) {
           break;
@@ -199,10 +208,11 @@ class WordSearch {
 
   #findWordVertical( word ) {
 
+    // First search from top to bottom.
     let wordPos = this.#findInRows( word, false );
+
     if ( "object" !== typeof( wordPos ) ) {
-      // Try the reverse vertical search.
-      // console.log( 'reverse vertical search' );
+      // Next search from bottom to top.
       wordPos = this.#findInRows( word, true );
     }
 
@@ -213,6 +223,8 @@ class WordSearch {
     this.words = words;
 
     let result = {};
+
+    // Look for the words in rows in both directions.
     for ( let ix = 0; ix < words.length; ix++ ) {
       const foundResult = this.#findWordHorizontal( words[ ix ] );
       if ( foundResult ) {
@@ -220,13 +232,11 @@ class WordSearch {
       }
     }
 
-    // console.log(result);
-
+    // Remove the words already found in rows from the list.
     const wordsFound = Object.keys( result );
-    // console.log('wordsFound:', wordsFound);
     const wordsNotFound = words.filter( w => !wordsFound.includes( w ) );
-    // console.log('wordsNotFound:', wordsNotFound);
 
+    // Look for the remaining words in columns in both directions.
     for ( let ix = 0; ix < wordsNotFound.length; ix++ ) {
       const foundResult = this.#findWordVertical( wordsNotFound[ ix ] );
       if ( foundResult ) {
