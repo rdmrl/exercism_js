@@ -11,7 +11,32 @@
  * @returns {number} time in minutes
  */
 export function timeToMixJuice(name) {
-  throw new Error('Please implement the timeToMixJuice function');
+  let timeInMinutes = 0;
+
+  switch( name ) {
+    case 'Pure Strawberry Joy':
+      timeInMinutes = 0.5;
+      break;
+
+    case 'Energizer':
+    case 'Green Garden':
+      timeInMinutes = 1.5;
+      break;
+
+    case 'Tropical Island':
+      timeInMinutes = 3;
+      break;
+
+    case 'All or Nothing':
+      timeInMinutes = 5;
+      break;
+
+    default:
+      timeInMinutes = 2.5;
+      break;
+  }
+
+  return timeInMinutes;
 }
 
 /**
@@ -23,7 +48,33 @@ export function timeToMixJuice(name) {
  * @returns {number} number of limes cut
  */
 export function limesToCut(wedgesNeeded, limes) {
-  throw new Error('Please implement the limesToCut function');
+  
+  if( wedgesNeeded === 0 ) {
+    return 0;
+  }
+
+  let numberOfLimesCut = 0;
+
+  while( limes.length > 0 && wedgesNeeded >= 0 ) {
+    const size = limes.pop();
+
+    switch( size ) {
+      case 'small':
+        wedgesNeeded -= 6;
+        numberOfLimesCut ++;
+        break;
+      case 'medium':
+        wedgesNeeded -= 8;
+        numberOfLimesCut ++;
+        break;
+      case 'large':
+        wedgesNeeded -= 10;
+        numberOfLimesCut ++;
+        break;
+    }
+  }
+
+  return numberOfLimesCut;
 }
 
 /**
@@ -34,5 +85,16 @@ export function limesToCut(wedgesNeeded, limes) {
  * @returns {string[]} remaining orders after the time is up
  */
 export function remainingOrders(timeLeft, orders) {
-  throw new Error('Please implement the remainingOrders function');
+  while( timeLeft > 0 && orders.length > 0 ) {
+    const juiceName = orders.shift();
+    const mixTime = timeToMixJuice( juiceName );
+     
+    if( ( timeLeft - mixTime ) >= 0 ) {
+      timeLeft -= mixTime;
+    } else {
+      break;
+    }
+  }
+
+  return orders;
 }
