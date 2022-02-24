@@ -8,7 +8,12 @@
  * @returns {number} sum of the two arrays
  */
 export function twoSum(array1, array2) {
-  throw new Error('Implement the twoSum function');
+  // Combine the arrays with the digits converted to strings.
+  // Convert them back to a number using parseInt.
+  let array1Value = parseInt( array1.join( '' ), 10 );
+  let array2Value = parseInt( array2.join( '' ), 10 );
+
+  return array1Value + array2Value;
 }
 
 /**
@@ -18,7 +23,23 @@ export function twoSum(array1, array2) {
  * @returns {boolean}  whether the number is a palindrome or not
  */
 export function luckyNumber(value) {
-  throw new Error('Implement the luckyNumber function');
+  // Convert into a string.
+  const strValue = String(value);
+
+  // Compare the digits from the start and the end and moving to the center.
+  for( let ix = 0, jx = strValue.length - 1; ix < strValue.length, jx >= 0; ix++, jx-- ) {
+    if( ix === jx ) {
+      // Stop at the center to avoid repeating the comparison.
+      break;
+    }
+    if( strValue[ix] === strValue[jx] ) {
+      continue;
+    } else {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
