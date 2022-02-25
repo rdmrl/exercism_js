@@ -13,8 +13,8 @@
  * @returns {string} template string combining both parameters
  */
 
-export function buildSign(occasion, name) {
-  throw new Error('Implement the buildSign function');
+export function buildSign ( occasion, name ) {
+  return `Happy ${occasion} ${name}!`;
 }
 
 /**
@@ -25,8 +25,12 @@ export function buildSign(occasion, name) {
  * @returns {string} template string based on age
  */
 
-export function buildBirthdaySign(age) {
-  throw new Error('Implement the buildBirthdaySign function');
+export function buildBirthdaySign ( age ) {
+  let ageBased = 'young';
+  if ( age >= 50 ) {
+    ageBased = 'mature';
+  }
+  return `Happy Birthday! What a ${ageBased} fellow you are.`;
 }
 
 /**
@@ -38,8 +42,8 @@ export function buildBirthdaySign(age) {
  * @returns {string} multi-line template string
  */
 
-export function graduationFor(name, year) {
-  throw new Error('Implement the graduationForm function');
+export function graduationFor ( name, year ) {
+  return `Congratulations ${name}!\nClass of ${year}`;
 }
 
 /**
@@ -52,6 +56,7 @@ export function graduationFor(name, year) {
  * @returns {string} cost to create the sign
  */
 
-export function costOf(sign, currency) {
-  throw new Error('Implement the costOf function');
+export function costOf ( sign, currency ) {
+  let cost = 20 + sign.length * 2;
+  return `Your sign costs ${cost.toFixed(2)} ${currency}.`;
 }
