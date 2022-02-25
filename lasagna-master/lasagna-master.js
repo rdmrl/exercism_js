@@ -13,7 +13,6 @@ export function cookingStatus ( timeInMinutes ) {
   }
 
   const timeVal = parseFloat( timeInMinutes, 10 );
-  console.log( timeInMinutes, timeVal );
   if ( timeVal === 0 ) {
     return 'Lasagna is done.';
   }
