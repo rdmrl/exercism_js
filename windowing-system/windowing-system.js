@@ -62,6 +62,11 @@ export class ProgramWindow {
 
     this.position.move(newX, newY);
   }
-
-
 }
+
+export function changeWindow(inputWindow) {
+  inputWindow.move(new Position(100, 150));
+  inputWindow.resize(new Size(400, 300));
+  return inputWindow;
+}
+
