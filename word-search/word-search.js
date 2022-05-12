@@ -165,7 +165,7 @@ class WordSearch {
     return wordPos;
   }
 
-  #findInRows( word, reverseSearch ) {
+  #findInRows( word, reverseSearch = false ) {
     let wordPos;
 
     // If in reverse search, start from the last row.
@@ -209,12 +209,20 @@ class WordSearch {
   #findWordVertical( word ) {
 
     // First search from top to bottom.
-    let wordPos = this.#findInRows( word, false );
+    let wordPos = this.#findInRows( word );
 
     if ( "object" !== typeof( wordPos ) ) {
       // Next search from bottom to top.
       wordPos = this.#findInRows( word, true );
     }
+
+    return wordPos;
+  }
+
+  #findWordDiagonal( word ) {
+    let wordPos;
+
+    // TODO: build a look-up table of word-starting character positions
 
     return wordPos;
   }
@@ -233,8 +241,8 @@ class WordSearch {
     }
 
     // Remove the words already found in rows from the list.
-    const wordsFound = Object.keys( result );
-    const wordsNotFound = words.filter( w => !wordsFound.includes( w ) );
+    let wordsFound = Object.keys( result );
+    let wordsNotFound = words.filter( w => !wordsFound.includes( w ) );
 
     // Look for the remaining words in columns in both directions.
     for ( let ix = 0; ix < wordsNotFound.length; ix++ ) {
@@ -244,7 +252,21 @@ class WordSearch {
       }
     }
 
-    // console.log( 'final result:', result );
+    // Remove the words already found in rows from the list.
+    wordsFound = Object.keys( result );
+    wordsNotFound = words.filter( w => !wordsFound.includes( w ) );
+
+    if( wordsNotFound.length > 0 ) {
+      // There are still words to be found. Try the diagonal search.
+      for ( let ix = 0; ix < wordsNotFound.length; ix++ ) {
+        const foundResult = this.#findWordDiagonal( wordsNotFound[ ix ] );
+        if ( foundResult ) {
+          result[ wordsNotFound[ ix ] ] = foundResult;
+        }
+      }
+    }
+
+    console.log( 'final result:', result );
     return result;
   }
 }

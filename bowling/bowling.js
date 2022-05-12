@@ -23,10 +23,35 @@ export class Bowling {
     }
 
     this.rollValues.push( rollValue );
+    /*
+    if(this.rollValues.length > 20) {
+      throw new Error('Cannot roll after the game is over');
+    }
+    */
+
+    console.log(this.rollValues.length, (this.rollValues.length % 2));
+    console.log(this.rollValues);
+
+    // If not the first roll and is the end of the frame
+    if(this.rollValues.length > 1 && (this.rollValues.length % 2) === 0) {
+      // The total of two rolls in a frame cannot score more than 10 points.
+      let lastRollIx = this.rollValues.length - 1;
+      const frameScore = (this.rollValues[lastRollIx] + this.rollValues[lastRollIx - 1]);
+      console.log('frameScore:', frameScore);
+      if(frameScore > 10) {
+        throw new Error('Pin count exceeds pins on the lane');
+      }
+    }
+
   }
 
   score() {
     const PERFECT_SCORE = 300;
+
+    // Incomplete game.
+    if( this.rollValues.length < 19 ) {
+      throw new Error('Score cannot be taken until the end of the game');
+    }
 
     // Special condition.
     if( this.rollValues.length == 12 ) {
